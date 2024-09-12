@@ -14,21 +14,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SpaceTravelTest {
     Connection connection;
-    String connectionTestUrl = StorageConstants.CONNECTION_URL;
+    String connectionUrl = StorageConstants.CONNECTION_URL;
     String connectionUsername = StorageConstants.CONNECTION_USERNAME;
     String connectionPassword = StorageConstants.CONNECTION_PASSWORD;
 
     @BeforeEach
     void setUp() throws SQLException {
         FlywayService.initDataBase(
-                connectionTestUrl,
+                connectionUrl,
                 connectionUsername,
                 connectionPassword
         );
 
 
         connection = new ConnectionProvider().createConnection(
-                connectionTestUrl,
+                connectionUrl,
                 connectionUsername,
                 connectionPassword
         );

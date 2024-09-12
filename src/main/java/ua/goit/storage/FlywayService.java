@@ -42,4 +42,7 @@ public class FlywayService {
         flyway.clean();
     }
 
+    public static void main(String[] args) {
+        initDataBase();
+    }
 }

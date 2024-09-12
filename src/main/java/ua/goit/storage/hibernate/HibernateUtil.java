@@ -1,11 +1,14 @@
 package ua.goit.storage.hibernate;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import ua.goit.emtity.client.Client;
+import ua.goit.entity.client.Client;
+import ua.goit.entity.client.ClientCrudService;
+import ua.goit.entity.planet.PlanetCrudService;
 
 public class HibernateUtil {
     private static final HibernateUtil INSTANCE;
@@ -18,8 +21,12 @@ public class HibernateUtil {
     }
 
     private HibernateUtil() {
-        sessionFactory = new Configuration().buildSessionFactory(
-                new StandardServiceRegistryBuilder().build()
+        Configuration configuration = new Configuration();
+        configuration.configure("hibernate.cfg.xml");
+        sessionFactory = configuration
+                .addAnnotatedClass(Client.class)
+                .buildSessionFactory(
+                        new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build()
         );
     }
 
@@ -31,12 +38,26 @@ public class HibernateUtil {
         sessionFactory.close();
     }
 
+    public Session startSession() {
+        return getSessionFactory().openSession();
+    }
+
     public static void main(String[] args) {
         HibernateUtil util = HibernateUtil.getInstance();
 
-        Session session = util.getSessionFactory().openSession();
-        Client client = session.get(Client.class, 1L);
-        System.out.println("client = " + client);
-        session.close();
+        Configuration configuration = new Configuration().configure();
+        SessionFactory sessionFactory = configuration.buildSessionFactory();
+
+        ClientCrudService clientCrudService = new ClientCrudService();
+        PlanetCrudService planetCrudService = new PlanetCrudService();
+
+
+
+        try(Session session = util.getSessionFactory().openSession()) {
+            Client client = new Client();
+            client.setName("Yevhenii Mitko");
+            clientCrudService.createClient(client);
+
+        }
     }
 }
